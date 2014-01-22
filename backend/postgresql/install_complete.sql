@@ -370,6 +370,7 @@ CREATE TABLE openatlas.tbl_links
   links_timestamp_start timestamp without time zone, -- date or time when the property begins to be linked to the entity
   links_timestamp_end timestamp without time zone, -- date or time when the property ends to be linked to the entity
   links_timestamp_creation timestamp without time zone DEFAULT NOW(), -- timestamp of the creation automatically composed 
+  links_timespan integer, -- duration of the link i.e. the timespan in which the property links the two entities (uid of a certain E52 entity)
   CONSTRAINT tbl_links_pkey PRIMARY KEY (links_uid),
   CONSTRAINT tbl_links_links_cidoc_number_direction_fkey FOREIGN KEY (links_cidoc_number_direction)
       REFERENCES openatlas.tbl_properties (tbl_properties_uid) MATCH SIMPLE
@@ -710,10 +711,9 @@ CREATE OR REPLACE VIEW openatlas.place_all_tree AS
 --GRANT ALL ON SCHEMA openatlas TO openatla_watzingeralex; -- replace name and privileges if necessary
 --GRANT ALL ON ALL TABLES IN SCHEMA openatlas TO openatla_watzingeralex; -- replace name and privileges if necessary
    --add rows if necessary
+
    
-   
-   
- ------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 --                                                                          --
 --  This file is part of openATLAS.                                         --
 --                                                                          --
@@ -755,6 +755,8 @@ CREATE TABLE openatlas.tbl_gis_sitetypes
   
 );
 
+GRANT ALL ON openatlas.tbl_gis_sitetypes TO public;
+
 INSERT INTO openatlas.tbl_gis_sitetypes (uid, type_name, path) SELECT id, name, name_path FROM openatlas.types_all_tree WHERE name_path LIKE '%Site >%';
 UPDATE openatlas.tbl_gis_sitetypes SET path = replace(path, 'Types > Site > ', '');
 
@@ -773,6 +775,8 @@ CREATE TABLE openatlas.tbl_gis_featuretypes
   
 );
 
+GRANT ALL ON openatlas.tbl_gis_featuretypes TO public;
+
 INSERT INTO openatlas.tbl_gis_featuretypes (uid, type_name, path) SELECT id, name, name_path FROM openatlas.types_all_tree WHERE name_path LIKE '%Feature >%';
 UPDATE openatlas.tbl_gis_featuretypes SET path = replace(path, 'Types > Feature > ', '');
 
@@ -790,6 +794,8 @@ CREATE TABLE openatlas.tbl_gis_strat_unitstypes
   
 );
 
+GRANT ALL ON openatlas.tbl_gis_strat_unitstypes TO public;
+
 INSERT INTO openatlas.tbl_gis_strat_unitstypes (uid, type_name, path) SELECT id, name, name_path FROM openatlas.types_all_tree WHERE name_path LIKE '%Stratigraphical Unit >%';
 UPDATE openatlas.tbl_gis_strat_unitstypes SET path = replace(path, 'Types > Stratigraphical Unit > ', '');
 
@@ -806,13 +812,10 @@ CREATE TABLE openatlas.tbl_gis_findtypes
   
 );
 
+GRANT ALL ON openatlas.tbl_gis_findtypes TO public;
+
 INSERT INTO openatlas.tbl_gis_findtypes (uid, type_name, path) SELECT id, name, name_path FROM openatlas.types_all_tree WHERE name_path LIKE '%Finds >%';
 UPDATE openatlas.tbl_gis_findtypes SET path = replace(path, 'Types > Finds > ', '');
-
-
---activate, add or replace roles if necessary
---GRANT ALL ON SCHEMA openatlas TO openatla_jansaviktor; -- replace name and privileges if necessary
---GRANT ALL ON ALL TABLES IN SCHEMA openatlas TO openatla_jansaviktor; -- replace name and privileges if necessary
 
 
 

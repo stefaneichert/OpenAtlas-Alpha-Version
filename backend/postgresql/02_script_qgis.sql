@@ -40,6 +40,8 @@ CREATE TABLE openatlas.tbl_gis_sitetypes
   
 );
 
+GRANT ALL ON openatlas.tbl_gis_sitetypes TO public;
+
 INSERT INTO openatlas.tbl_gis_sitetypes (uid, type_name, path) SELECT id, name, name_path FROM openatlas.types_all_tree WHERE name_path LIKE '%Site >%';
 UPDATE openatlas.tbl_gis_sitetypes SET path = replace(path, 'Types > Site > ', '');
 
@@ -58,6 +60,8 @@ CREATE TABLE openatlas.tbl_gis_featuretypes
   
 );
 
+GRANT ALL ON openatlas.tbl_gis_featuretypes TO public;
+
 INSERT INTO openatlas.tbl_gis_featuretypes (uid, type_name, path) SELECT id, name, name_path FROM openatlas.types_all_tree WHERE name_path LIKE '%Feature >%';
 UPDATE openatlas.tbl_gis_featuretypes SET path = replace(path, 'Types > Feature > ', '');
 
@@ -75,6 +79,8 @@ CREATE TABLE openatlas.tbl_gis_strat_unitstypes
   
 );
 
+GRANT ALL ON openatlas.tbl_gis_strat_unitstypes TO public;
+
 INSERT INTO openatlas.tbl_gis_strat_unitstypes (uid, type_name, path) SELECT id, name, name_path FROM openatlas.types_all_tree WHERE name_path LIKE '%Stratigraphical Unit >%';
 UPDATE openatlas.tbl_gis_strat_unitstypes SET path = replace(path, 'Types > Stratigraphical Unit > ', '');
 
@@ -91,10 +97,8 @@ CREATE TABLE openatlas.tbl_gis_findtypes
   
 );
 
+GRANT ALL ON openatlas.tbl_gis_findtypes TO public;
+
 INSERT INTO openatlas.tbl_gis_findtypes (uid, type_name, path) SELECT id, name, name_path FROM openatlas.types_all_tree WHERE name_path LIKE '%Finds >%';
 UPDATE openatlas.tbl_gis_findtypes SET path = replace(path, 'Types > Finds > ', '');
 
-
---activate, add or replace roles if necessary
---GRANT ALL ON SCHEMA openatlas TO openatla_jansaviktor; -- replace name and privileges if necessary
---GRANT ALL ON ALL TABLES IN SCHEMA openatlas TO openatla_jansaviktor; -- replace name and privileges if necessary
