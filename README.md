@@ -16,3 +16,6 @@ OpenATLAS is powered by Postgresql and PostGIS (or Sqlite and Spatialite
 in the file based-offline version) and therefore connectible to every
 common GIS program like Qgis or ArcGIS. The project is written in c++,
 using the Qt-framework in version 5.1 (status 2013-07-14).
+
+
+For more Info visit: www.openatlas.eu
