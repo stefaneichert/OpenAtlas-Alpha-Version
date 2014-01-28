@@ -76,6 +76,7 @@ INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E021', 'person', 'Person', N
 INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E058', 'measurement unit', 'Masseinheit', NULL, 'E055');
 INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E057', 'material', 'Material', NULL, 'E055');
 INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E000', 'class root', 'Klasse Ursprung', NULL, NULL);
+INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E030', 'right', 'Recht', NULL, 'E089');
 
 --tbl_properties
 DROP TABLE IF EXISTS openatlas.tbl_properties CASCADE;
@@ -119,8 +120,10 @@ INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P046', 'P046a', 'is compo
 INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P046', 'P046b', 'forms part of', 'is composed of', 'P046a', 'bildet Teil von', 'ist zusammengesetzt aus', NULL, 'E018', 'E018');
 INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P086', 'P086a', 'falls within (chronological)', 'contains (chronological)', 'P086b', 'fällt zeitlich in', 'enthält zeitlich', NULL, 'E052', 'E052');
 INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P086', 'P086b', 'contains (chronological)', 'falls within (chronological)', 'P086a', 'enthält zeitlich', 'fällt zeitlich in', NULL, 'E052', 'E052');
-INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P053', 'P053a', 'has former or current location', 'is former or current location of', 'P053b', 'hat Standort', 'ist Standort von', NULL, 'E018', 'E052');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P053', 'P053a', 'has former or current location', 'is former or current location of', 'P053b', 'hat Standort', 'ist Standort von', NULL, 'E018', 'E053');
 INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P053', 'P053b', 'is former or current location of', 'has former or current location', 'P053a', 'ist Standort von', 'hat Standort', NULL, 'E053', 'E018');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P104', 'P104a', 'is subject to', 'applies to', 'P104b', 'Gegenstand von', 'findet Anwendung auf', NULL, 'E072', 'E030');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P104', 'P104b', 'applies to', 'is subject to', 'P104a', 'findet Anwendung auf', 'Gegenstand von', NULL, 'E030', 'E072');
 
 
 -- tbl_entities
@@ -353,6 +356,9 @@ INSERT INTO openatlas.tbl_entities (entity_id, classes_uid, entity_name_uri, ent
 --sample data places required
 INSERT INTO openatlas.tbl_entities (entity_id, classes_uid, entity_name_uri, entity_type) VALUES ('pla_001', 4, 'Places', NULL);
 INSERT INTO openatlas.tbl_entities (entity_id, classes_uid, entity_name_uri, entity_type) VALUES ('pla_002', 4, 'Europe', 17);
+
+
+
 
 
 
