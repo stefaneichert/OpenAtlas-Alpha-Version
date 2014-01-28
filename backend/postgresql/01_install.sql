@@ -124,6 +124,8 @@ INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P053', 'P053a', 'has form
 INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P053', 'P053b', 'is former or current location of', 'has former or current location', 'P053a', 'ist Standort von', 'hat Standort', NULL, 'E053', 'E018');
 INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P104', 'P104a', 'is subject to', 'applies to', 'P104b', 'Gegenstand von', 'findet Anwendung auf', NULL, 'E072', 'E030');
 INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P104', 'P104b', 'applies to', 'is subject to', 'P104a', 'findet Anwendung auf', 'Gegenstand von', NULL, 'E030', 'E072');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P105', 'P105a', 'right held by', 'has right on', 'P105b', 'Rechte gehören', 'hat Rechte an', NULL, 'E072', 'E039');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P105', 'P105b', 'has right on', 'right held by', 'P105a', 'hat Rechte an', 'Rechte gehören', NULL, 'E039', 'E072');
 
 
 -- tbl_entities
