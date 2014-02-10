@@ -1074,9 +1074,293 @@ WHERE
   tbl_entities.entity_type = types_all_tree.id AND
   tbl_entities.classes_uid = 11 AND -- entity has to be a document
   types_all_tree.name_path LIKE '%> Text%'; -- entity's type must be Text or Subtype
+  
+  
+ 
+--Evidence Links: Archeological units like sites, features, stratigraphical_units and finds that are linked to entities of Class E55 (type) that are subtypes (has broader term - P127) of "Evidence"
+     
+ CREATE OR REPLACE VIEW openatlas.links_evidence AS 
+SELECT 
+   openatlas.tbl_links.links_entity_uid_from, -- Site/Feature etc. that is known by a certain type of evidence
+   openatlas.tbl_links.links_cidoc_number_direction, 
+   openatlas.tbl_links.links_entity_uid_to, -- Evidence by which the site is known
+   openatlas.tbl_links.links_creator,
+   openatlas.tbl_links.links_uid,
+   openatlas.types_all_tree.name_path, -- name path contains *Evidence
+   openatlas.types_all_tree.name,
+   openatlas.types_all_tree.path
+FROM (openatlas.tbl_links INNER JOIN openatlas.tbl_entities ON openatlas.tbl_links.links_entity_uid_to = openatlas.tbl_entities.uid) 
+ INNER JOIN openatlas.types_all_tree ON openatlas.tbl_entities.uid = openatlas.types_all_tree.id
+ WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=1) AND ((openatlas.types_all_tree.name_path) Like '%> Evidence >%'));
 
 
---GRANT ALL ON SCHEMA openatlas TO openatla_jansaviktor; -- replace name and privileges if necessary
+--Archeological_Parent Links: Archeological units like sites, features and stratigraphical_units (E18) that are parents (is composed of - p46a) of other archeological units
+     
+ CREATE OR REPLACE VIEW openatlas.links_parents_arch AS 
+SELECT 
+   openatlas.tbl_links.links_entity_uid_from, --archeological parent like a certain Site
+   openatlas.tbl_links.links_cidoc_number_direction, -- P46a
+   openatlas.tbl_links.links_entity_uid_to, -- archeological child like a certain feature from a certain site
+   openatlas.tbl_links.links_creator,
+   openatlas.tbl_links.links_uid,
+   openatlas.tbl_links.links_annotation,
+   openatlas.types_all_tree.name_path,
+   openatlas.types_all_tree.name,
+   openatlas.types_all_tree.path,
+   openatlas.tbl_entities.entity_name_uri,
+   openatlas.tbl_entities.entity_description 
+FROM openatlas.tbl_links 
+ INNER JOIN (openatlas.tbl_entities INNER JOIN openatlas.types_all_tree ON openatlas.tbl_entities.entity_type=openatlas.types_all_tree.id)
+ ON openatlas.tbl_links.links_entity_uid_to=openatlas.tbl_entities.uid 
+ WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=11)) 
+ ORDER BY openatlas.tbl_entities.entity_name_uri, openatlas.tbl_entities.uid; 
+ 
+
+ 
+ 
+ --Image Links: Entitites (e.g. sites, features and stratigraphical_units, finds etc.) that are documented (P070b) in images (E31 entities that have the type image or subtype)
+     
+ CREATE OR REPLACE VIEW openatlas.links_images AS  
+SELECT 
+   openatlas.types_all_tree.name_path, -- must contain *> Image *
+   openatlas.tbl_links.links_entity_uid_from, -- entity that is documented by an image
+   openatlas.tbl_links.links_entity_uid_to, -- image that shows the entity
+   openatlas.tbl_links.links_cidoc_number_direction, -- is documented in (P70b)
+   openatlas.tbl_entities.uid, 
+   openatlas.tbl_entities.entity_id, 
+   openatlas.tbl_entities.entity_name_uri, 
+   openatlas.tbl_links.links_uid
+FROM openatlas.tbl_links 
+INNER JOIN (openatlas.tbl_entities INNER JOIN openatlas.types_all_tree ON openatlas.tbl_entities.entity_type = openatlas.types_all_tree.id)
+ON openatlas.tbl_links.links_entity_uid_to = openatlas.tbl_entities.uid
+WHERE (((openatlas.types_all_tree.name_path) Like '%> Image %'))
+ORDER BY openatlas.tbl_entities.uid;
+
+
+
+ --Age Links: Burials/Skeletons that have a certain type (P002a) of age (type - E55, Subtype of "Age >"
+     
+ CREATE OR REPLACE VIEW openatlas.links_age AS
+SELECT 
+   openatlas.tbl_links.links_entity_uid_from, 
+   openatlas.tbl_links.links_cidoc_number_direction, 
+   openatlas.tbl_links.links_entity_uid_to, 
+   openatlas.tbl_links.links_creator, 
+   openatlas.tbl_links.links_uid, 
+   openatlas.types_all_tree.name_path, 
+   openatlas.types_all_tree.name, 
+   openatlas.types_all_tree.path, 
+   openatlas.tbl_links.links_annotation 
+ FROM openatlas.tbl_links 
+   INNER JOIN (openatlas.tbl_entities INNER JOIN openatlas.types_all_tree ON openatlas.tbl_entities.uid=openatlas.types_all_tree.id)
+   ON openatlas.tbl_links.links_entity_uid_to=openatlas.tbl_entities.uid 
+   WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=1) AND ((openatlas.types_all_tree.name_path) Like '%Age >%'));
+
+
+--Sex Links: Burials/Skeletons that have a certain type (P002a) of sex (type - E55, Subtype of "Sex >"
+     
+ CREATE OR REPLACE VIEW openatlas.links_sex AS
+SELECT 
+   openatlas.tbl_links.links_entity_uid_from, 
+   openatlas.tbl_links.links_cidoc_number_direction, 
+   openatlas.tbl_links.links_entity_uid_to, 
+   openatlas.tbl_links.links_creator, 
+   openatlas.tbl_links.links_uid, 
+   openatlas.types_all_tree.name_path, 
+   openatlas.types_all_tree.name, 
+   openatlas.types_all_tree.path, 
+   openatlas.tbl_links.links_annotation 
+ FROM openatlas.tbl_links 
+   INNER JOIN (openatlas.tbl_entities INNER JOIN openatlas.types_all_tree ON openatlas.tbl_entities.uid=openatlas.types_all_tree.id)
+   ON openatlas.tbl_links.links_entity_uid_to=openatlas.tbl_entities.uid 
+   WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=1) AND ((openatlas.types_all_tree.name_path) Like '%Sex >%'));
+   
+   
+
+--Bibliography Links: Entitites (e.g. sites, features and stratigraphical_units, finds, images etc.) that are documented (P070b) in texts (E31 entities that have a subtype of text)
+     
+ CREATE OR REPLACE VIEW openatlas.links_bibliography AS   
+SELECT 
+  openatlas.tbl_links.links_entity_uid_from, 
+  openatlas.tbl_links.links_cidoc_number_direction, 
+  openatlas.tbl_links.links_entity_uid_to, 
+  openatlas.tbl_links.links_creator, 
+  openatlas.tbl_links.links_uid, 
+  openatlas.types_all_tree.name_path, 
+  openatlas.types_all_tree.name, 
+  openatlas.types_all_tree.path, 
+  openatlas.tbl_entities.entity_name_uri, 
+  openatlas.tbl_entities.entity_description, 
+  openatlas.tbl_links.links_annotation
+FROM openatlas.tbl_links 
+   INNER JOIN (openatlas.tbl_entities INNER JOIN openatlas.types_all_tree ON openatlas.tbl_entities.entity_type = openatlas.types_all_tree.id)
+    ON openatlas.tbl_links.links_entity_uid_to = openatlas.tbl_entities.uid
+WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=4) AND ((openatlas.types_all_tree.name_path) Like '%> Text >%'))
+ORDER BY openatlas.tbl_entities.entity_name_uri, openatlas.tbl_entities.uid;
+
+
+
+--Chronological Links: Archeological units like sites, features, stratigraphical_units and finds that are linked (P86a) to entities of Class E52 (timespan)
+     
+ CREATE OR REPLACE VIEW openatlas.links_chronological AS 
+
+SELECT 
+   openatlas.tbl_links.links_entity_uid_from, 
+   openatlas.tbl_links.links_cidoc_number_direction, 
+   openatlas.tbl_links.links_entity_uid_to, 
+   openatlas.tbl_links.links_creator, 
+   openatlas.tbl_links.links_uid, 
+   openatlas.chronological_period_all_tree.name_path, 
+   openatlas.chronological_period_all_tree.name, 
+   openatlas.chronological_period_all_tree.path 
+ FROM openatlas.tbl_links 
+    INNER JOIN openatlas.chronological_period_all_tree ON openatlas.tbl_links.links_entity_uid_to=openatlas.chronological_period_all_tree.id 
+    WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=13)); 
+    
+    
+--cultural Links: Archeological units like sites, features, stratigraphical_units and finds that are linked (P10a) to entities of Class E4 (period)
+CREATE OR REPLACE VIEW openatlas.links_cultural AS 
+SELECT 
+  openatlas.tbl_links.links_entity_uid_from, 
+  openatlas.tbl_links.links_cidoc_number_direction, 
+  openatlas.tbl_links.links_entity_uid_to, 
+  openatlas.tbl_links.links_creator, 
+  openatlas.tbl_links.links_uid, 
+  openatlas.cultural_period_all_tree.name_path, 
+  openatlas.cultural_period_all_tree.name, 
+  openatlas.cultural_period_all_tree.path 
+FROM openatlas.tbl_links 
+ INNER JOIN openatlas.cultural_period_all_tree ON openatlas.tbl_links.links_entity_uid_to=openatlas.cultural_period_all_tree.id 
+ WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=9)); 
+   
+
+
+
+--grave construction Links: Graves that are (P2 has tyoe) to entities of Class E55 (type) that are subtypes of 'Grave Construction'
+CREATE OR REPLACE VIEW openatlas.links_graveconstruction AS    
+SELECT 
+   openatlas.tbl_links.links_entity_uid_from, 
+   openatlas.tbl_links.links_cidoc_number_direction, 
+   openatlas.tbl_links.links_entity_uid_to, 
+   openatlas.tbl_links.links_creator, 
+   openatlas.tbl_links.links_uid, 
+   openatlas.types_all_tree.name_path, 
+   openatlas.types_all_tree.name, 
+   openatlas.types_all_tree.path, 
+   openatlas.tbl_links.links_annotation
+ FROM openatlas.tbl_links 
+    INNER JOIN (openatlas.tbl_entities 
+       INNER JOIN openatlas.types_all_tree 
+       ON openatlas.tbl_entities.uid = openatlas.types_all_tree.id) 
+    ON openatlas.tbl_links.links_entity_uid_to = openatlas.tbl_entities.uid
+ WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=1) AND ((openatlas.types_all_tree.name_path) Like '%Grave Construction%'));
+
+ 
+ 
+--grave shape Links: Graves that are linked (P2 has type) to entities of Class E55 (type) that are subtypes of 'Grave Shape'
+CREATE OR REPLACE VIEW openatlas.links_graveshape AS    
+SELECT 
+   openatlas.tbl_links.links_entity_uid_from, 
+   openatlas.tbl_links.links_cidoc_number_direction, 
+   openatlas.tbl_links.links_entity_uid_to, 
+   openatlas.tbl_links.links_creator, 
+   openatlas.tbl_links.links_uid, 
+   openatlas.types_all_tree.name_path, 
+   openatlas.types_all_tree.name, 
+   openatlas.types_all_tree.path, 
+   openatlas.tbl_links.links_annotation
+ FROM openatlas.tbl_links 
+    INNER JOIN (openatlas.tbl_entities 
+       INNER JOIN openatlas.types_all_tree 
+       ON openatlas.tbl_entities.uid = openatlas.types_all_tree.id) 
+    ON openatlas.tbl_links.links_entity_uid_to = openatlas.tbl_entities.uid
+ WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=1) AND ((openatlas.types_all_tree.name_path) Like '%Grave Shape%'));
+ 
+ 
+ --Material Links: archeological units that have a certain type (P002a) of material (E57, Subtype of "Material >"
+     
+ CREATE OR REPLACE VIEW openatlas.links_material AS
+SELECT 
+   openatlas.tbl_links.links_entity_uid_from, 
+   openatlas.tbl_links.links_cidoc_number_direction, 
+   openatlas.tbl_links.links_entity_uid_to, 
+   openatlas.tbl_links.links_creator, 
+   openatlas.tbl_links.links_uid, 
+   openatlas.types_all_tree.name_path, 
+   openatlas.types_all_tree.name, 
+   openatlas.types_all_tree.path, 
+   openatlas.tbl_links.links_annotation 
+ FROM openatlas.tbl_links 
+   INNER JOIN (openatlas.tbl_entities INNER JOIN openatlas.types_all_tree ON openatlas.tbl_entities.uid=openatlas.types_all_tree.id)
+   ON openatlas.tbl_links.links_entity_uid_to=openatlas.tbl_entities.uid 
+   WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=1) AND ((openatlas.types_all_tree.name_path) Like '%Material >%'));
+
+   
+--Place Links: archeological units that are located within (P053a) places (E53)
+     
+ CREATE OR REPLACE VIEW openatlas.links_places AS
+SELECT 
+    openatlas.tbl_links.links_entity_uid_from, 
+    openatlas.tbl_links.links_cidoc_number_direction, 
+    openatlas.tbl_links.links_entity_uid_to, 
+    openatlas.tbl_links.links_creator, 
+    openatlas.tbl_links.links_uid, 
+    openatlas.place_all_tree.name_path, 
+    openatlas.place_all_tree.name, 
+    openatlas.place_all_tree.path, 
+    tbl_entities_1.entity_name_uri AS type_name, 
+    openatlas.tbl_links.links_annotation
+  FROM (openatlas.tbl_links 
+     INNER JOIN openatlas.place_all_tree ON openatlas.tbl_links.links_entity_uid_to = openatlas.place_all_tree.id) 
+     INNER JOIN (openatlas.tbl_entities INNER JOIN openatlas.tbl_entities AS tbl_entities_1 ON openatlas.tbl_entities.entity_type = tbl_entities_1.uid) 
+     ON openatlas.place_all_tree.id = openatlas.tbl_entities.uid
+  WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=15) AND ((openatlas.place_all_tree.name_path) Like '%Europe%'));   
+   
+
+   
+--Rights Links: entities that are that are subject to (P104a) certain rights (E30)
+     
+ CREATE OR REPLACE VIEW openatlas.links_rights AS
+SELECT 
+    openatlas.tbl_links.links_entity_uid_from, 
+    openatlas.tbl_links.links_cidoc_number_direction, 
+    openatlas.tbl_links.links_entity_uid_to, 
+    openatlas.tbl_links.links_creator, 
+    openatlas.tbl_links.links_uid, 
+    openatlas.tbl_entities.classes_uid, 
+    openatlas.tbl_entities.entity_name_uri, 
+    openatlas.tbl_entities.entity_description, 
+    openatlas.tbl_entities.entity_id
+  FROM openatlas.tbl_links 
+    INNER JOIN openatlas.tbl_entities ON openatlas.tbl_links.links_entity_uid_to = openatlas.tbl_entities.uid
+  WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=17) AND ((openatlas.tbl_entities.classes_uid)=21));
+  
+
+  
+  --Rightsholder Links: entities whose rights are held (P105a) by certain actors (E39)
+     
+ CREATE OR REPLACE VIEW openatlas.links_rightsholder AS  
+SELECT 
+   openatlas.tbl_links.links_entity_uid_from, 
+   openatlas.tbl_links.links_cidoc_number_direction, 
+   openatlas.tbl_links.links_entity_uid_to, 
+   openatlas.tbl_links.links_creator, 
+   openatlas.tbl_links.links_uid, 
+   openatlas.tbl_entities.classes_uid, 
+   openatlas.tbl_entities.entity_name_uri, 
+   openatlas.tbl_entities.entity_description, 
+   openatlas.tbl_entities.entity_id
+  FROM openatlas.tbl_links 
+     INNER JOIN openatlas.tbl_entities ON openatlas.tbl_links.links_entity_uid_to = openatlas.tbl_entities.uid
+  WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=19));
+
+
+
+  
+--  
+--GRANT ALL ON SCHEMA public TO openatla_jansaviktor; -- replace name and privileges if necessary
 --GRANT ALL ON ALL TABLES IN SCHEMA openatlas TO openatla_jansaviktor; -- replace name and privileges if necessary
 
   
+
+
