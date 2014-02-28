@@ -32,6 +32,23 @@
   --  to document: Name, description, type, dating, center coordinates, dimensions
   --  defined by: Cidoc Class Nr = E018/physical thing AND Type = Site (or Subtype of Site)
 
+DROP VIEW openatlas.sites
+DROP VIEW openatlas.features
+DROP VIEW openatlas.stratigraphical_units
+DROP VIEW openatlas.finds
+DROP VIEW openatlas.texts
+
+
+--V.1
+--Update older timestamp types
+
+ALTER TABLE "openatlas"."tbl_entities" ALTER COLUMN "timestamp_creation" TYPE timestamp(0);
+ALTER TABLE "openatlas"."tbl_entities" ALTER COLUMN "timestamp_edit" TYPE timestamp(0);
+ALTER TABLE "openatlas"."tbl_links" ALTER COLUMN "links_timestamp_start" TYPE timestamp(0);
+ALTER TABLE "openatlas"."tbl_links" ALTER COLUMN "links_timestamp_end" TYPE timestamp(0);
+ALTER TABLE "openatlas"."tbl_links" ALTER COLUMN "links_timestamp_creation" TYPE timestamp(0);
+
+
 CREATE OR REPLACE VIEW openatlas.sites AS  
 SELECT 
   tbl_entities.uid, -- a
