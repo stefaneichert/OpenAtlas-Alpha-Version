@@ -32,11 +32,11 @@
   --  to document: Name, description, type, dating, center coordinates, dimensions
   --  defined by: Cidoc Class Nr = E018/physical thing AND Type = Site (or Subtype of Site)
 
-DROP VIEW openatlas.sites
-DROP VIEW openatlas.features
-DROP VIEW openatlas.stratigraphical_units
-DROP VIEW openatlas.finds
-DROP VIEW openatlas.texts
+DROP VIEW openatlas.sites;
+DROP VIEW openatlas.features;
+DROP VIEW openatlas.stratigraphical_units;
+DROP VIEW openatlas.finds;
+DROP VIEW openatlas.texts;
 
 
 --V.1
@@ -546,10 +546,10 @@ SELECT
 
   
 --  
-GRANT ALL ON SCHEMA public TO openatla_jansaviktor; -- replace name and privileges if necessary
-GRANT ALL ON ALL TABLES IN SCHEMA openatlas TO openatla_jansaviktor; -- replace name and privileges if necessary
-GRANT ALL ON SCHEMA public TO openatla_jansaviktor; -- replace name and privileges if necessary
-GRANT ALL ON ALL TABLES IN SCHEMA openatlas TO openatla_jansaviktor; -- replace name and privileges if necessary
+--GRANT ALL ON SCHEMA public TO openatla_jansaviktor; -- replace name and privileges if necessary
+--GRANT ALL ON ALL TABLES IN SCHEMA openatlas TO openatla_jansaviktor; -- replace name and privileges if necessary
+--GRANT ALL ON SCHEMA public TO openatla_jansaviktor; -- replace name and privileges if necessary
+--GRANT ALL ON ALL TABLES IN SCHEMA openatlas TO openatla_jansaviktor; -- replace name and privileges if necessary
 
   
 
