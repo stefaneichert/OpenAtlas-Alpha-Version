@@ -144,8 +144,8 @@ CREATE TABLE openatlas.tbl_entities
   uid serial NOT NULL, -- ongoig number, auto increment
   user_id character varying(10) NOT NULL DEFAULT 'sys'::character varying, -- user id (to be inserted by the gui)
   entity_id character varying(250) NOT NULL, -- unique entity  ID automatically composed by adding user-id and an ongoing number 
-  timestamp_creation timestamp without time zone DEFAULT NOW(), -- timestamp of the creation automatically composed 
-  timestamp_edit timestamp without time zone, -- timestamp of last edit automatically composed 
+  timestamp_creation timestamp() DEFAULT NOW(), -- timestamp of the creation automatically composed 
+  timestamp_edit timestamp(), -- timestamp of last edit automatically composed 
   user_edit character varying(10), -- user responsible for the last edit (to be inserted by the gui)
   
   --identification
@@ -375,9 +375,9 @@ CREATE TABLE openatlas.tbl_links
   links_entity_uid_to integer NOT NULL, -- target entity uid
   links_annotation character varying(250), -- remarks, description etc. E.g. for declaring a page number in case of entity of class document „refers to“ entity of class thing ecc. 
   links_creator character varying(50) NOT NULL DEFAULT 'sys'::character varying (50), -- username of the link's creator
-  links_timestamp_start timestamp without time zone, -- date or time when the property begins to be linked to the entity
-  links_timestamp_end timestamp without time zone, -- date or time when the property ends to be linked to the entity
-  links_timestamp_creation timestamp without time zone DEFAULT NOW(), -- timestamp of the creation automatically composed 
+  links_timestamp_start timestamp(), -- date or time when the property begins to be linked to the entity
+  links_timestamp_end timestamp(), -- date or time when the property ends to be linked to the entity
+  links_timestamp_creation timestamp() DEFAULT NOW(), -- timestamp of the creation automatically composed 
   links_timespan integer, -- duration of the link i.e. the timespan in which the property links the two entities (uid of a certain E52 entity)
   CONSTRAINT tbl_links_pkey PRIMARY KEY (links_uid),
   CONSTRAINT tbl_links_links_cidoc_number_direction_fkey FOREIGN KEY (links_cidoc_number_direction)
