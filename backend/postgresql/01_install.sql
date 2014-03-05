@@ -180,9 +180,10 @@ CREATE TABLE openatlas.tbl_entities
   
 
   CONSTRAINT tbl_entities_pkey PRIMARY KEY (uid),
-  CONSTRAINT tbl_entities_entity_class_nr_fkey FOREIGN KEY (classes_uid)
-      REFERENCES openatlas.tbl_classes (tbl_classes_uid) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE NO ACTION
+  CONSTRAINT tbl_entities_entity_class_nr_fkey FOREIGN KEY (classes_uid),
+        REFERENCES openatlas.tbl_classes (tbl_classes_uid) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION,
+  CONSTRAINT entity_id_unique UNIQUE (entity_id)
 );
 
   -- + geom(Point), -- geometry field created by the postgis-extension with SELECT AddGeometryColumn (..)

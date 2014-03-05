@@ -32,21 +32,26 @@
   --  to document: Name, description, type, dating, center coordinates, dimensions
   --  defined by: Cidoc Class Nr = E018/physical thing AND Type = Site (or Subtype of Site)
 
-DROP VIEW openatlas.sites;
-DROP VIEW openatlas.features;
-DROP VIEW openatlas.stratigraphical_units;
-DROP VIEW openatlas.finds;
-DROP VIEW openatlas.texts;
+DROP VIEW IF EXISTS openatlas.sites,
+ openatlas.features,
+ openatlas.stratigraphical_units,
+ openatlas.finds,
+ openatlas.texts,
+ openatlas.links_evidence, 
+ openatlas.links_parents_arch,
+ openatlas.links_images,
+ openatlas.links_age,
+ openatlas.links_sex,
+ openatlas.links_bibliography,
+ openatlas.links_chronological,
+ openatlas.links_cultural,
+ openatlas.links_graveconstruction,
+ openatlas.links_graveshape,
+ openatlas.links_material,
+ openatlas.links_places,
+ openatlas.links_rights,
+ openatlas.links_rightsholder;
 
-
---V.1
---Update older timestamp types
-
-ALTER TABLE "openatlas"."tbl_entities" ALTER COLUMN "timestamp_creation" TYPE timestamp(0);
-ALTER TABLE "openatlas"."tbl_entities" ALTER COLUMN "timestamp_edit" TYPE timestamp(0);
-ALTER TABLE "openatlas"."tbl_links" ALTER COLUMN "links_timestamp_start" TYPE timestamp(0);
-ALTER TABLE "openatlas"."tbl_links" ALTER COLUMN "links_timestamp_end" TYPE timestamp(0);
-ALTER TABLE "openatlas"."tbl_links" ALTER COLUMN "links_timestamp_creation" TYPE timestamp(0);
 
 
 CREATE OR REPLACE VIEW openatlas.sites AS  
@@ -545,7 +550,11 @@ SELECT
 
 
   
---  
+
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO public;
+GRANT SELECT ON ALL TABLES IN SCHEMA openatlas TO public;
+
+
 --GRANT ALL ON SCHEMA public TO openatla_jansaviktor; -- replace name and privileges if necessary
 --GRANT ALL ON ALL TABLES IN SCHEMA openatlas TO openatla_jansaviktor; -- replace name and privileges if necessary
 --GRANT ALL ON SCHEMA public TO openatla_jansaviktor; -- replace name and privileges if necessary
