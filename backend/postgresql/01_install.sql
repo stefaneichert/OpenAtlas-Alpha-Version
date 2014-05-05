@@ -374,7 +374,7 @@ CREATE TABLE openatlas.tbl_links
   links_entity_uid_from integer NOT NULL, -- source entity uid
   links_cidoc_number_direction integer NOT NULL, -- cidoc code of the property + direction as defined in tbl_properties
   links_entity_uid_to integer NOT NULL, -- target entity uid
-  links_annotation character varying(250), -- remarks, description etc. E.g. for declaring a page number in case of entity of class document „refers to“ entity of class thing ecc. 
+  links_annotation text, -- remarks, description etc. E.g. for declaring a page number in case of entity of class document „refers to“ entity of class thing ecc. 
   links_creator character varying(50) NOT NULL DEFAULT 'sys'::character varying (50), -- username of the link's creator
   links_timestamp_start timestamp(0), -- date or time when the property begins to be linked to the entity
   links_timestamp_end timestamp(0), -- date or time when the property ends to be linked to the entity
