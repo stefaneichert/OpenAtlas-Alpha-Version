@@ -80,4 +80,32 @@ DELETE FROM openatlas.tbl_links WHERE links_uid = 'my_current_uid';
 
 
 
+--Delete statement to delete arch unit + all subunits of resp. unit
+
+   WITH RECURSIVE path(id, path, parent, name, parent_id, name_path) AS (
+                 SELECT openatlas.arch_parent_child.child_id, ''::text || openatlas.arch_parent_child.child_id::text AS path, NULL::text AS text, openatlas.arch_parent_child.child_name, openatlas.arch_parent_child.parent_id, ''::text || openatlas.arch_parent_child.child_name::text AS name_path
+                   FROM openatlas.arch_parent_child
+                  WHERE openatlas.arch_parent_child.parent_id = "Uid of arch unit goes here (without quotes)" -- replace value with parent of top-category you want to have displayed
+        UNION ALL 
+                 SELECT openatlas.arch_parent_child.child_id, (parentpath.path || 
+                        CASE parentpath.path
+                            WHEN ' > '::text THEN ''::text
+                            ELSE ' > '::text
+                        END) || openatlas.arch_parent_child.child_id::text, parentpath.path, openatlas.arch_parent_child.child_name, openatlas.arch_parent_child.parent_id, 
+
+		    (parentpath.name_path || 
+                        CASE parentpath.name_path
+                            WHEN ' > '::text THEN ''::text
+                            ELSE ' > '::text
+                        END) || openatlas.arch_parent_child.child_name::text
+
+                   FROM openatlas.arch_parent_child, path parentpath
+                  WHERE openatlas.arch_parent_child.parent_id::text = parentpath.id::text
+        )
+
+DELETE FROM openatlas.tbl_entities WHERE UID IN (SELECT path.id FROM path);
+DELETE FROM openatlas.tbl_entities WHERE UID = "uid of your arch unit goes here";
+
+
+
 
