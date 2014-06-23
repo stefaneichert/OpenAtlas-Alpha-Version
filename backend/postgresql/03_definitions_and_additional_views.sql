@@ -85,7 +85,9 @@ SELECT
                           -- In the GUI a Lookup Field should show the SRIDS name
   tbl_entities.geom, -- a
   tbl_entities.entity_type, -- e (In the GUI the user should be able to select the type by its name in a hierarchical organized Select-Dialogue that saves the chosen type's uid in the entity_type field of the current dataset)
-  types_all_tree.name_path  -- v
+  types_all_tree.name_path,  -- v
+  st_x(st_transform(st_setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
+  st_y(st_transform(st_setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84
 FROM 
   openatlas.types_all_tree, 
   openatlas.tbl_entities
@@ -132,13 +134,19 @@ SELECT
                           -- In the GUI a Lookup Field should show the SRIDS name
   tbl_entities.geom, -- a
   tbl_entities.entity_type, -- e (In the GUI the user should be able to select the type by its name in a hierarchical organized Select-Dialogue that saves the chosen type's uid in the entity_type field of the current dataset)
-  types_all_tree.name_path  -- v
+  types_all_tree.name_path,  -- v
+  st_x(st_transform(st_setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
+  st_y(st_transform(st_setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84,
+  tbl_links.links_entity_uid_from AS parent -- v parent uid of feature
 FROM 
   openatlas.types_all_tree, 
-  openatlas.tbl_entities
+  openatlas.tbl_entities,
+  openatlas.tbl_links
 WHERE 
   tbl_entities.entity_type = types_all_tree.id AND
   tbl_entities.classes_uid = 12 AND -- entity has to be a physical thing
+  tbl_links.links_entity_uid_to = tbl_entities.uid AND
+  tbl_links.links_cidoc_number_direction = 11 AND
   types_all_tree.name_path LIKE '%> Feature%'; -- entity's type must be Feature or Subtype
 
 
@@ -181,13 +189,19 @@ SELECT
                           -- In the GUI a Lookup Field should show the SRIDS name
   tbl_entities.geom, -- a
   tbl_entities.entity_type, -- e (In the GUI the user should be able to select the type by its name in a hierarchical organized Select-Dialogue that saves the chosen type's uid in the entity_type field of the current dataset)
-  types_all_tree.name_path  -- v
+  types_all_tree.name_path,  -- v
+  st_x(st_transform(st_setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
+  st_y(st_transform(st_setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84,
+  tbl_links.links_entity_uid_from AS parent -- v parent uid of feature
 FROM 
   openatlas.types_all_tree, 
-  openatlas.tbl_entities
+  openatlas.tbl_entities,
+  openatlas.tbl_links
 WHERE 
   tbl_entities.entity_type = types_all_tree.id AND
   tbl_entities.classes_uid = 12 AND -- entity has to be a physical thing
+  tbl_links.links_entity_uid_to = tbl_entities.uid AND
+  tbl_links.links_cidoc_number_direction = 11 AND
   types_all_tree.name_path LIKE '%> Stratigraphical Unit%'; -- entity's type must be Stratigraphical Unit or Subtype
 
 
@@ -229,13 +243,19 @@ SELECT
                           -- In the GUI a Lookup Field should show the SRIDS name
   tbl_entities.geom, -- a
   tbl_entities.entity_type, -- e (In the GUI the user should be able to select the type by its name in a hierarchical organized Select-Dialogue that saves the chosen type's uid in the entity_type field of the current dataset)
-  types_all_tree.name_path  -- v
+  types_all_tree.name_path,  -- v
+  st_x(st_transform(st_setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
+  st_y(st_transform(st_setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84,
+  tbl_links.links_entity_uid_from AS parent -- v parent uid of feature
 FROM 
   openatlas.types_all_tree, 
-  openatlas.tbl_entities
+  openatlas.tbl_entities,
+  openatlas.tbl_links
 WHERE 
   tbl_entities.entity_type = types_all_tree.id AND
   tbl_entities.classes_uid = 15 AND -- entity has to be a physical thing
+  tbl_links.links_entity_uid_to = tbl_entities.uid AND
+  tbl_links.links_cidoc_number_direction = 11 AND
   types_all_tree.name_path LIKE '%> Finds%'; -- entity's type must be Finds or Subtype
 
 
@@ -275,13 +295,14 @@ WHERE
  CREATE OR REPLACE VIEW openatlas.links_evidence AS 
 SELECT 
    openatlas.tbl_links.links_entity_uid_from, -- Site/Feature etc. that is known by a certain type of evidence
-   openatlas.tbl_links.links_cidoc_number_direction, 
-   openatlas.tbl_links.links_entity_uid_to, -- Evidence by which the site is known
-   openatlas.tbl_links.links_creator,
+   --openatlas.tbl_links.links_cidoc_number_direction, 
+   --openatlas.tbl_links.links_entity_uid_to, -- Evidence by which the site is known
+   --openatlas.tbl_links.links_creator,
    openatlas.tbl_links.links_uid,
    openatlas.types_all_tree.name_path, -- name path contains *Evidence
    openatlas.types_all_tree.name,
-   openatlas.types_all_tree.path
+   --openatlas.types_all_tree.path,
+   openatlas.tbl_links.links_annotation
 FROM (openatlas.tbl_links INNER JOIN openatlas.tbl_entities ON openatlas.tbl_links.links_entity_uid_to = openatlas.tbl_entities.uid) 
  INNER JOIN openatlas.types_all_tree ON openatlas.tbl_entities.uid = openatlas.types_all_tree.id
  WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=1) AND ((openatlas.types_all_tree.name_path) Like '%> Evidence >%'));
@@ -375,13 +396,13 @@ SELECT
  CREATE OR REPLACE VIEW openatlas.links_bibliography AS   
 SELECT 
   openatlas.tbl_links.links_entity_uid_from, 
-  openatlas.tbl_links.links_cidoc_number_direction, 
+  --openatlas.tbl_links.links_cidoc_number_direction, 
   openatlas.tbl_links.links_entity_uid_to, 
-  openatlas.tbl_links.links_creator, 
+  --openatlas.tbl_links.links_creator, 
   openatlas.tbl_links.links_uid, 
-  openatlas.types_all_tree.name_path, 
+  --openatlas.types_all_tree.name_path, 
   openatlas.types_all_tree.name, 
-  openatlas.types_all_tree.path, 
+  --openatlas.types_all_tree.path, 
   openatlas.tbl_entities.entity_name_uri, 
   openatlas.tbl_entities.entity_description, 
   openatlas.tbl_links.links_annotation
@@ -475,13 +496,13 @@ SELECT
  CREATE OR REPLACE VIEW openatlas.links_material AS
 SELECT 
    openatlas.tbl_links.links_entity_uid_from, 
-   openatlas.tbl_links.links_cidoc_number_direction, 
-   openatlas.tbl_links.links_entity_uid_to, 
-   openatlas.tbl_links.links_creator, 
+   --openatlas.tbl_links.links_cidoc_number_direction, 
+   --openatlas.tbl_links.links_entity_uid_to, 
+   --openatlas.tbl_links.links_creator, 
    openatlas.tbl_links.links_uid, 
    openatlas.types_all_tree.name_path, 
    openatlas.types_all_tree.name, 
-   openatlas.types_all_tree.path, 
+   --openatlas.types_all_tree.path, 
    openatlas.tbl_links.links_annotation 
  FROM openatlas.tbl_links 
    INNER JOIN (openatlas.tbl_entities INNER JOIN openatlas.types_all_tree ON openatlas.tbl_entities.uid=openatlas.types_all_tree.id)
@@ -493,21 +514,23 @@ SELECT
      
  CREATE OR REPLACE VIEW openatlas.links_places AS
 SELECT 
-    openatlas.tbl_links.links_entity_uid_from, 
-    openatlas.tbl_links.links_cidoc_number_direction, 
-    openatlas.tbl_links.links_entity_uid_to, 
-    openatlas.tbl_links.links_creator, 
-    openatlas.tbl_links.links_uid, 
-    openatlas.place_all_tree.name_path, 
-    openatlas.place_all_tree.name, 
-    openatlas.place_all_tree.path, 
-    tbl_entities_1.entity_name_uri AS type_name, 
-    openatlas.tbl_links.links_annotation
-  FROM (openatlas.tbl_links 
-     INNER JOIN openatlas.place_all_tree ON openatlas.tbl_links.links_entity_uid_to = openatlas.place_all_tree.id) 
-     INNER JOIN (openatlas.tbl_entities INNER JOIN openatlas.tbl_entities AS tbl_entities_1 ON openatlas.tbl_entities.entity_type = tbl_entities_1.uid) 
-     ON openatlas.place_all_tree.id = openatlas.tbl_entities.uid
-  WHERE (((openatlas.tbl_links.links_cidoc_number_direction)=15) AND ((openatlas.place_all_tree.name_path) Like '%Europe%'));   
+  tbl_links.links_entity_uid_from, 
+  tbl_links.links_uid, 
+  place_all_tree.name_path, 
+  place_all_tree.name, 
+  types.entity_name_uri AS type_name, 
+  tbl_links.links_annotation
+FROM 
+  openatlas.tbl_links, 
+  openatlas.place_all_tree, 
+  openatlas.tbl_entities, 
+  openatlas.tbl_entities types
+WHERE 
+  tbl_links.links_entity_uid_to = place_all_tree.id AND
+  place_all_tree.id = tbl_entities.uid AND
+  tbl_entities.entity_type = types.uid AND
+  tbl_links.links_cidoc_number_direction = 15 AND 
+  place_all_tree.name_path LIKE '%World%';
    
 
    

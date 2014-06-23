@@ -180,7 +180,7 @@ CREATE TABLE openatlas.tbl_entities
   
 
   CONSTRAINT tbl_entities_pkey PRIMARY KEY (uid),
-  CONSTRAINT tbl_entities_entity_class_nr_fkey FOREIGN KEY (classes_uid),
+  CONSTRAINT tbl_entities_entity_class_nr_fkey FOREIGN KEY (classes_uid)
         REFERENCES openatlas.tbl_classes (tbl_classes_uid) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION,
   CONSTRAINT entity_id_unique UNIQUE (entity_id)
@@ -543,6 +543,20 @@ CREATE OR REPLACE VIEW openatlas.all_tree AS
 
 
 
+--view archeological units+subunits parent_child (needed to delete arch subunits+subsubunits)
+
+CREATE OR REPLACE VIEW openatlas.arch_parent_child AS 
+SELECT tbl_entities.uid AS parent_id, 
+    tbl_entities.entity_name_uri AS parent_name,
+    tbl_entities_1.uid AS child_id, 
+    tbl_entities_1.entity_name_uri AS child_name
+       FROM openatlas.tbl_entities
+   JOIN openatlas.tbl_links ON tbl_entities.uid = tbl_links.links_entity_uid_from
+   JOIN openatlas.tbl_entities tbl_entities_1 ON tbl_links.links_entity_uid_to = tbl_entities_1.uid
+  WHERE tbl_links.links_cidoc_number_direction = 11;
+
+
+
 --view types parent_child (needed for recursive view "types_all_tree")
 
 CREATE OR REPLACE VIEW openatlas.types_parent_child AS 
@@ -555,6 +569,7 @@ CREATE OR REPLACE VIEW openatlas.types_parent_child AS
    JOIN openatlas.tbl_links ON tbl_entities.uid = tbl_links.links_entity_uid_from
    JOIN openatlas.tbl_entities tbl_entities_1 ON tbl_links.links_entity_uid_to = tbl_entities_1.uid
   WHERE tbl_links.links_cidoc_number_direction = 7 AND (tbl_entities.classes_uid = 13 OR tbl_entities.classes_uid = 18 OR tbl_entities.classes_uid = 19);
+
 
 
 
