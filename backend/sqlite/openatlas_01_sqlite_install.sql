@@ -90,6 +90,12 @@ INSERT INTO tbl_classes (cidoc_class_nr, cidoc_class_original_name, cidoc_class_
 INSERT INTO tbl_classes (cidoc_class_nr, cidoc_class_original_name, cidoc_class_name_translated, class_description, class_parent_cidoc_nr) VALUES ('E058', 'measurement unit', 'Masseinheit', NULL, 'E055');
 INSERT INTO tbl_classes (cidoc_class_nr, cidoc_class_original_name, cidoc_class_name_translated, class_description, class_parent_cidoc_nr) VALUES ('E057', 'material', 'Material', NULL, 'E055');
 INSERT INTO tbl_classes (cidoc_class_nr, cidoc_class_original_name, cidoc_class_name_translated, class_description, class_parent_cidoc_nr) VALUES ('E000', 'class root', 'Klasse Ursprung', NULL, NULL);
+INSERT INTO tbl_classes (cidoc_class_nr, cidoc_class_original_name, cidoc_class_name_translated, class_description, class_parent_cidoc_nr) VALUES ('E030', 'right', 'Recht', NULL, 'E089');
+INSERT INTO tbl_classes (cidoc_class_nr, cidoc_class_original_name, cidoc_class_name_translated, class_description, class_parent_cidoc_nr) VALUES ('E005', 'event', 'Ereignis', NULL, 'E004');
+INSERT INTO tbl_classes (cidoc_class_nr, cidoc_class_original_name, cidoc_class_name_translated, class_description, class_parent_cidoc_nr) VALUES ('E030', 'acquisition', 'Erwerb', NULL, 'E005');
+INSERT INTO tbl_classes (cidoc_class_nr, cidoc_class_original_name, cidoc_class_name_translated, class_description, class_parent_cidoc_nr) VALUES ('E033', 'linguistic object', 'Sprachlicher Gegenstand', NULL, 'E073');
+INSERT INTO tbl_classes (cidoc_class_nr, cidoc_class_original_name, cidoc_class_name_translated, class_description, class_parent_cidoc_nr) VALUES ('E040', 'legal body', 'Juristische Person', NULL, 'E074');
+INSERT INTO tbl_classes (cidoc_class_nr, cidoc_class_original_name, cidoc_class_name_translated, class_description, class_parent_cidoc_nr) VALUES ('E074', 'group', 'Gruppe', NULL, 'E039');
 
 
 
@@ -137,6 +143,27 @@ INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_directi
 INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ('P086', 'P086b', 'contains (chronological)', 'falls within (chronological)', 'P086a', 'enthält zeitlich', 'fällt zeitlich in', NULL, 'E052', 'E052');
 INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ('P053', 'P053a', 'has former or current location', 'is former or current location of', 'P053b', 'hat Standort', 'ist Standort von', NULL, 'E018', 'E052');
 INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ('P053', 'P053b', 'is former or current location of', 'has former or current location', 'P053a', 'ist Standort von', 'hat Standort', NULL, 'E053', 'E018');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P104', 'P104a', 'is subject to', 'applies to', 'P104b', 'Gegenstand von', 'findet Anwendung auf', NULL, 'E072', 'E030');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P104', 'P104b', 'applies to', 'is subject to', 'P104a', 'findet Anwendung auf', 'Gegenstand von', NULL, 'E030', 'E072');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P105', 'P105a', 'right held by', 'has right on', 'P105b', 'Rechte gehören', 'hat Rechte an', NULL, 'E072', 'E039');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P105', 'P105b', 'has right on', 'right held by', 'P105a', 'hat Rechte an', 'Rechte gehören', NULL, 'E039', 'E072');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P007', 'P007a', 'took place at', 'witnessed', 'P007b', 'fand statt in', 'bezeugte', NULL, 'E004', 'E053');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P007', 'P007b', 'witnessed', 'took place at', 'P007a', 'bezeugte', 'fand statt in', NULL, 'E053', 'E004');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P012', 'P012a', 'occurred in the presence of', 'was present at', 'P012b', 'fand statt im Beisein von', 'war anwesend bei', NULL, 'E005', 'E039');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P012', 'P012b', 'was present at', 'occurred in the presence of', 'P012a', 'war anwesend bei', 'fand statt im Beisein von', NULL, 'E039', 'E005');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P015', 'P015a', 'was influenced by', 'influenced', 'P015b', 'beeinflußte', 'wurde beeinflußt durch', NULL, 'E077', 'E005');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P015', 'P015b', 'influenced', 'was influenced by', 'P015a', 'wurde beeinflußt durch', 'beeinflußte', NULL, 'E005', 'E077');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P022', 'P022a', 'transferred title to', 'acquired title through', 'P022b', 'übertrug Besitztitel auf', 'erwarb Besitztitel durch', NULL, 'E005', 'E039');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P022', 'P022b', 'acquired title through', 'transferred title to', 'P022a', 'erwarb Besitztitel durch', 'übertrug Besitztitel auf', NULL, 'E039', 'E005');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P023', 'P023a', 'transferred title from', 'surrendered title through', 'P023b', 'übertrug Besitztitel von', 'trat Besitztitel ab in', NULL, 'E005', 'E039');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P023', 'P023b', 'surrendered title through', 'transferred title from', 'P023a', 'trat Besitztitel ab in', 'übertrug Besitztitel von', NULL, 'E039', 'E005');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P024', 'P024a', 'transferred title of', 'changed ownership through', 'P024b', 'übertrug Besitz über', 'ging über in Besitz durch', NULL, 'E007', 'E018');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P024', 'P024b', 'changed ownership through', 'transferred title of', 'P024a', 'ging über in Besitz durch', 'übertrug Besitz über', NULL, 'E018', 'E007');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P073', 'P073a', 'has translation', 'is translation of', 'P073b', 'hat Übersetzung', 'ist Übersetzung von', NULL, 'E033', 'E033');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P073', 'P073b', 'is translation of', 'has translation', 'P073a', 'ist Übersetzung von', 'hat Übersetzung', NULL, 'E033', 'E033');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P107', 'P107a', 'has current or former member', 'is current or former member of', 'P107b', 'hat derzeitiges oder früheres Mitglied', 'ist derzeitiges oder früheres Mitglied von', NULL, 'E074', 'E039');
+INSERT INTO tbl_properties (property_cidoc_number, property_cidoc_number_direction, property_from_original, property_to_original, property_to_number, property_from_translated, property_to_translated, property_description, property_domain, property_range) VALUES ( 'P107', 'P107b', 'is current or former member of', 'has current or former member', 'P107a', 'ist derzeitiges oder früheres Mitglied von', 'hat derzeitiges oder früheres Mitglied', NULL, 'E039', 'E074');
+
 
 
 
@@ -178,19 +205,19 @@ CREATE TABLE tbl_entities
   end_time_text character varying(50), -- additional text to handle fuzzy temporal information
 
   --dimensions
-  dim_width double precision, -- width of entity if exists
-  dim_length double precision, -- length of entity if exists
-  dim_height double precision, -- height of entity if exists
-  dim_thickness double precision, -- thickness of entity if exists
-  dim_diameter double precision, -- diameter of entity if exists
-  dim_units character varying(20), -- units of measurement like meters, centimeters...
-  dim_weight double precision, -- weight of the entity if exists
-  dim_units_weight character varying (20), -- units of the weight like kilogram, ton, gram
+  dim_width double, -- width of entity if exists
+  dim_length double, -- length of entity if exists
+  dim_height double, -- height of entity if exists
+  dim_thickness double, -- thickness of entity if exists
+  dim_diameter double, -- diameter of entity if exists
+  dim_units integer, -- units of measurement like meters, centimeters...
+  dim_weight double, -- weight of the entity if exists
+  dim_units_weight integer, -- units of the weight like kilogram, ton, gram
   dim_degrees integer, -- degrees (360° for full circle, clockwise, north = 0, east = 90...)
 
     --spatial
-  x_lon_easting double precision, -- X-coordinate
-  y_lat_northing double precision, -- Y-coordinate
+  x_lon_easting double, -- X-coordinate
+  y_lat_northing double, -- Y-coordinate
   srid_epsg integer, -- EPSG Code /SRID of the coord. System
 
       
@@ -405,11 +432,12 @@ CREATE TABLE tbl_links
   links_entity_uid_from integer NOT NULL, -- source entity uid
   links_cidoc_number_direction integer NOT NULL, -- cidoc code of the property + direction as defined in tbl_properties
   links_entity_uid_to integer NOT NULL, -- target entity uid
-  links_annotation character varying(250), -- remarks, description etc. E.g. for declaring a page number in case of entity of class document „refers to“ entity of class thing ecc. 
+  links_annotation text, -- remarks, description etc. E.g. for declaring a page number in case of entity of class document „refers to“ entity of class thing ecc. 
   links_creator character varying(50) DEFAULT 'sys', -- username of the link's creator
   links_timestamp_start timestamp without time zone, -- date or time when the property begins to be linked to the entity
   links_timestamp_end timestamp without time zone, -- date or time when the property ends to be linked to the entity
-  links_timestamp_creation timestamp without time zone DEFAULT CURRENT_TIMESTAMP, -- timestamp of the creation automatically composed 
+  links_timestamp_creation timestamp without time zone DEFAULT CURRENT_TIMESTAMP, -- timestamp of the creation automatically composed
+  links_timespan integer, -- duration of the link i.e. the timespan in which the property links the two entities (uid of a certain E52 entity)
   CONSTRAINT tbl_links_links_cidoc_number_direction_fkey FOREIGN KEY (links_cidoc_number_direction)
       REFERENCES tbl_properties (tbl_properties_uid) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
