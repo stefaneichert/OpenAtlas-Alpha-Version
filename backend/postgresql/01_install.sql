@@ -77,6 +77,11 @@ INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E058', 'measurement unit', '
 INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E057', 'material', 'Material', NULL, 'E055');
 INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E000', 'class root', 'Klasse Ursprung', NULL, NULL);
 INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E030', 'right', 'Recht', NULL, 'E089');
+INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E005', 'event', 'Ereignis', NULL, 'E004');
+INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E030', 'acquisition', 'Erwerb', NULL, 'E005');
+INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E033', 'linguistic object', 'Sprachlicher Gegenstand', NULL, 'E073');
+INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E040', 'legal body', 'Juristische Person', NULL, 'E074');
+INSERT INTO openatlas.tbl_classes VALUES (DEFAULT, 'E074', 'group', 'Gruppe', NULL, 'E039');
 
 --tbl_properties
 DROP TABLE IF EXISTS openatlas.tbl_properties CASCADE;
@@ -126,6 +131,24 @@ INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P104', 'P104a', 'is subje
 INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P104', 'P104b', 'applies to', 'is subject to', 'P104a', 'findet Anwendung auf', 'Gegenstand von', NULL, 'E030', 'E072');
 INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P105', 'P105a', 'right held by', 'has right on', 'P105b', 'Rechte gehören', 'hat Rechte an', NULL, 'E072', 'E039');
 INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P105', 'P105b', 'has right on', 'right held by', 'P105a', 'hat Rechte an', 'Rechte gehören', NULL, 'E039', 'E072');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P007', 'P007a', 'took place at', 'witnessed', 'P007b', 'fand statt in', 'bezeugte', NULL, 'E004', 'E053');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P007', 'P007b', 'witnessed', 'took place at', 'P007a', 'bezeugte', 'fand statt in', NULL, 'E053', 'E004');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P012', 'P012a', 'occurred in the presence of', 'was present at', 'P012b', 'fand statt im Beisein von', 'war anwesend bei', NULL, 'E005', 'E039');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P012', 'P012b', 'was present at', 'occurred in the presence of', 'P012a', 'war anwesend bei', 'fand statt im Beisein von', NULL, 'E039', 'E005');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P015', 'P015a', 'was influenced by', 'influenced', 'P015b', 'beeinflußte', 'wurde beeinflußt durch', NULL, 'E077', 'E005');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P015', 'P015b', 'influenced', 'was influenced by', 'P015a', 'wurde beeinflußt durch', 'beeinflußte', NULL, 'E005', 'E077');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P022', 'P022a', 'transferred title to', 'acquired title through', 'P022b', 'übertrug Besitztitel auf', 'erwarb Besitztitel durch', NULL, 'E005', 'E039');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P022', 'P022b', 'acquired title through', 'transferred title to', 'P022a', 'erwarb Besitztitel durch', 'übertrug Besitztitel auf', NULL, 'E039', 'E005');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P023', 'P023a', 'transferred title from', 'surrendered title through', 'P023b', 'übertrug Besitztitel von', 'trat Besitztitel ab in', NULL, 'E005', 'E039');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P023', 'P023b', 'surrendered title through', 'transferred title from', 'P023a', 'trat Besitztitel ab in', 'übertrug Besitztitel von', NULL, 'E039', 'E005');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P024', 'P024a', 'transferred title of', 'changed ownership through', 'P024b', 'übertrug Besitz über', 'ging über in Besitz durch', NULL, 'E007', 'E018');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P024', 'P024b', 'changed ownership through', 'transferred title of', 'P024a', 'ging über in Besitz durch', 'übertrug Besitz über', NULL, 'E018', 'E007');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P073', 'P073a', 'has translation', 'is translation of', 'P073b', 'hat Übersetzung', 'ist Übersetzung von', NULL, 'E033', 'E033');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P073', 'P073b', 'is translation of', 'has translation', 'P073a', 'ist Übersetzung von', 'hat Übersetzung', NULL, 'E033', 'E033');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P107', 'P107a', 'has current or former member', 'is current or former member of', 'P107b', 'hat derzeitiges oder früheres Mitglied', 'ist derzeitiges oder früheres Mitglied von', NULL, 'E074', 'E039');
+INSERT INTO openatlas.tbl_properties VALUES (DEFAULT, 'P107', 'P107b', 'is current or former member of', 'has current or former member', 'P107a', 'ist derzeitiges oder früheres Mitglied von', 'hat derzeitiges oder früheres Mitglied', NULL, 'E039', 'E074');
+
+
 
 
 -- tbl_entities
@@ -167,9 +190,9 @@ CREATE TABLE openatlas.tbl_entities
   dim_height double precision, -- height of entity if exists
   dim_thickness double precision, -- thickness of entity if exists
   dim_diameter double precision, -- diameter of entity if exists
-  dim_units character varying(20), -- units of measurement like meters, centimeters...
+  dim_units integer, -- units of measurement like meters, centimeters... , selected from measurement unit entities
   dim_weight double precision, -- weight of the entity if exists
-  dim_units_weight character varying (20), -- units of the weight like kilogram, ton, gram
+  dim_units_weight integer, -- units of the weight like kilogram, ton, gram, selected from measurement unit entities
   dim_degrees integer, -- degrees (360° for full circle, clockwise, north = 0, east = 90...)
 
     --spatial
@@ -358,7 +381,8 @@ INSERT INTO openatlas.tbl_entities (entity_id, classes_uid, entity_name_uri, ent
 
 --sample data places required
 INSERT INTO openatlas.tbl_entities (entity_id, classes_uid, entity_name_uri, entity_type) VALUES ('pla_001', 4, 'Places', NULL);
-INSERT INTO openatlas.tbl_entities (entity_id, classes_uid, entity_name_uri, entity_type) VALUES ('pla_002', 4, 'Europe', 17);
+INSERT INTO openatlas.tbl_entities (entity_id, classes_uid, entity_name_uri, entity_type) VALUES ('pla_002', 4, 'World', 17);
+INSERT INTO openatlas.tbl_entities (entity_id, classes_uid, entity_name_uri, entity_type) VALUES ('pla_003', 4, 'Europe', 17);
 
 
 
@@ -383,7 +407,7 @@ CREATE TABLE openatlas.tbl_links
   CONSTRAINT tbl_links_pkey PRIMARY KEY (links_uid),
   CONSTRAINT tbl_links_links_cidoc_number_direction_fkey FOREIGN KEY (links_cidoc_number_direction)
       REFERENCES openatlas.tbl_properties (tbl_properties_uid) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
+      ON UPDATE CASCADE ON DELETE NO ACTION,
   CONSTRAINT tbl_links_links_entity_id_from_fkey FOREIGN KEY (links_entity_uid_from)
       REFERENCES openatlas.tbl_entities (uid) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE CASCADE,
@@ -439,6 +463,8 @@ INSERT INTO openatlas.tbl_links (links_entity_uid_from, links_cidoc_number_direc
 INSERT INTO openatlas.tbl_links (links_entity_uid_from, links_cidoc_number_direction, links_entity_uid_to) VALUES ((SELECT uid FROM openatlas.tbl_entities WHERE entity_id = 'Per_005'), (SELECT tbl_properties_uid serial FROM openatlas.tbl_properties WHERE property_cidoc_number_direction = 'P010a'), (SELECT uid FROM openatlas.tbl_entities WHERE entity_id = 'Per_001'));
 INSERT INTO openatlas.tbl_links (links_entity_uid_from, links_cidoc_number_direction, links_entity_uid_to) VALUES ((SELECT uid FROM openatlas.tbl_entities WHERE entity_id = 'Per_006'), (SELECT tbl_properties_uid serial FROM openatlas.tbl_properties WHERE property_cidoc_number_direction = 'P010a'), (SELECT uid FROM openatlas.tbl_entities WHERE entity_id = 'Per_001'));
 INSERT INTO openatlas.tbl_links (links_entity_uid_from, links_cidoc_number_direction, links_entity_uid_to) VALUES ((SELECT uid FROM openatlas.tbl_entities WHERE entity_id = 'Per_007'), (SELECT tbl_properties_uid serial FROM openatlas.tbl_properties WHERE property_cidoc_number_direction = 'P010a'), (SELECT uid FROM openatlas.tbl_entities WHERE entity_id = 'Per_001'));
+INSERT INTO openatlas.tbl_links (links_entity_uid_from, links_cidoc_number_direction, links_entity_uid_to) VALUES ((SELECT uid FROM openatlas.tbl_entities WHERE entity_id = 'pla_003'), (SELECT tbl_properties_uid serial FROM openatlas.tbl_properties WHERE property_cidoc_number_direction = 'P089a'), (SELECT uid FROM openatlas.tbl_entities WHERE entity_id = 'pla_002'));
+
 
 --gis_tables
 --they store geometry data connected to certain entities. Each entity may have many GIS data connected (1:n)
@@ -453,6 +479,7 @@ CREATE TABLE openatlas.tbl_gis_linestring
   parent_uid integer, -- uid of parent
   object_name character varying(100), -- to whom it may concern
   object_description text, -- to whom it may concern
+  object_type integer, -- type of the entity
   srid_epsg integer, -- EPSG Code /SRID of the coord. System
   CONSTRAINT tbl_gis_linestring_pkey PRIMARY KEY (linestring_uid),
   CONSTRAINT tbl_gis_linestring_parent_entity_id_fkey FOREIGN KEY (parent_uid)
@@ -472,6 +499,7 @@ CREATE TABLE openatlas.tbl_gis_polygons
   parent_uid integer, -- uid of parent
   object_name character varying(100), -- to whom it may concern
   object_description text, -- to whom it may concern
+  object_type integer, -- type of the entity
   srid_epsg integer, -- EPSG Code /SRID of the coord. System
   CONSTRAINT tbl_gis_polygons_pkey PRIMARY KEY (polygons_uid),
   CONSTRAINT tbl_gis_polygons_parent_entity_id_fkey FOREIGN KEY (parent_uid)
@@ -491,6 +519,7 @@ CREATE TABLE openatlas.tbl_gis_points
   parent_uid integer, -- uid of parent
   object_name character varying(100), -- to whom it may concern
   object_description text, -- to whom it may concern
+  object_type integer, -- type of the entity
   srid_epsg integer, -- EPSG Code /SRID of the coord. System
   CONSTRAINT tbl_gis_points_pkey PRIMARY KEY (points_uid),
   CONSTRAINT tbl_gis_points_parent_entity_id_fkey FOREIGN KEY (parent_uid)

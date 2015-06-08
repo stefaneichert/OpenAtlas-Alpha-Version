@@ -187,8 +187,8 @@ CREATE TABLE tbl_entities
   uid INTEGER PRIMARY KEY, -- ongoig number, auto increment
   user_id character varying(10) DEFAULT 'sys', -- user id (to be inserted by the gui)
   entity_id character varying(50), -- unique entity  ID automatically composed by adding user-id and an ongoing number 
-  timestamp_creation timestamp without time zone DEFAULT CURRENT_TIMESTAMP, -- timestamp of the creation automatically composed 
-  timestamp_edit timestamp without time zone, -- timestamp of last edit automatically composed 
+  timestamp_creation text DEFAULT NULL, -- timestamp of the creation automatically composed 
+  timestamp_edit text DEFAULT NULL, -- timestamp of last edit automatically composed 
   user_edit character varying(10), -- user responsible for the last edit (to be inserted by the gui)
   
   --identification
@@ -219,6 +219,7 @@ CREATE TABLE tbl_entities
   x_lon_easting double, -- X-coordinate
   y_lat_northing double, -- Y-coordinate
   srid_epsg integer, -- EPSG Code /SRID of the coord. System
+  geom text, --dummy for spatiallite geom field
 
       
   CONSTRAINT tbl_entities_entity_class_nr_fkey FOREIGN KEY (classes_uid)
@@ -228,8 +229,7 @@ CREATE TABLE tbl_entities
   );
     
     
--- + geom(Point), -- geometry field created by the spatialite-extension with SELECT AddGeometryColumn (..)
-SELECT AddGeometryColumn ( 'tbl_entities', 'geom', -1, 'POINT', 2 );
+
 
 
 
@@ -238,81 +238,9 @@ SELECT AddGeometryColumn ( 'tbl_entities', 'geom', -1, 'POINT', 2 );
 
 --triggers for automatic creation of necessary values
 
---Geometry on Insert
------------------------------------------------------------
--- Create Geometry if values for X and Y are inserted
-DROP TRIGGER IF EXISTS geometry_from_text_insert;
-CREATE TRIGGER geometry_from_text_insert
-  AFTER INSERT 
-  ON tbl_entities
-  FOR EACH ROW
-  WHEN (NEW.geom IS NULL)
-  
-  BEGIN 
-  
-    UPDATE tbl_entities SET geom = MakePoint(NEW.x_lon_easting, NEW.y_lat_northing) WHERE uid = NEW.uid;
-    
-   END;
-   
-   
--- Create values for X and Y if geometry is inserted
-   DROP TRIGGER IF EXISTS text_from_geometry_insert;
-CREATE TRIGGER text_from_geometry_insert
-  AFTER INSERT 
-  ON tbl_entities
-  FOR EACH ROW
-  WHEN (NEW.geom IS NOT NULL)
-  
-  BEGIN 
-  
-    UPDATE tbl_entities SET x_lon_easting = X(NEW.geom) WHERE uid = NEW.uid;
-    UPDATE tbl_entities SET y_lat_northing = Y(NEW.geom) WHERE uid = NEW.uid;
-    
-   END;
-   
-   
-
-   
-   
-   
---Geometry on Update
------------------------------------------------------------
-  
-  
-  -- Create values for X and Y if geometry is updated
-DROP TRIGGER IF EXISTS text_from_geometry_update;
-CREATE TRIGGER text_from_geometry_upate
-  AFTER UPDATE 
-  ON tbl_entities
-  FOR EACH ROW
-  WHEN (NEW.geom <> OLD.geom)
-  
-  BEGIN 
-  
-    UPDATE tbl_entities SET x_lon_easting = X(NEW.geom) WHERE uid = NEW.uid;
-    UPDATE tbl_entities SET y_lat_northing = Y(NEW.geom) WHERE uid = NEW.uid;
-    
-   END;
-   
-
-   -- Create Geometry if values for X and Y are updated
-DROP TRIGGER IF EXISTS geometry_from_text_update;
-CREATE TRIGGER geometry_from_text_update
-  AFTER UPDATE
-  ON tbl_entities
-  FOR EACH ROW
-  WHEN (NEW.x_lon_easting <> OLD.x_lon_easting OR NEW.y_lat_northing <> OLD.y_lat_northing)
-  
-  BEGIN 
-  
-    UPDATE tbl_entities SET geom = MakePoint(NEW.x_lon_easting, NEW.y_lat_northing) WHERE uid = NEW.uid;
-    
-   END;  
-
-   
 
 --------------------------------------------------------------   
- --creation of timestamps, id on insert
+ --creation of id on insert
 
  
  --creation of user
@@ -344,19 +272,7 @@ CREATE TRIGGER geometry_from_text_update
     
     END;
     
- --creation of edit timestamp
-
- DROP TRIGGER IF EXISTS edit_time;
- CREATE TRIGGER edit_time
-  AFTER UPDATE
-  ON tbl_entities
-  FOR EACH ROW
-  
-  BEGIN 
-  
-    UPDATE tbl_entities SET timestamp_edit = CURRENT_TIMESTAMP WHERE uid = NEW.uid;
-  
-  END;
+ 
     
     
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -373,6 +289,14 @@ CREATE TRIGGER geometry_from_text_update
   ON tbl_entities
     
   BEGIN 
+  
+   DELETE FROM all_path WHERE id = NEW.uid;
+   INSERT INTO all_path (name, id, parent_id) SELECT child_name, child_uid, parent_uid FROM parent_child_all WHERE child_uid = NEW.uid; 
+   UPDATE all_path SET path = 15, name_path = "Types" WHERE name = "Types";
+   UPDATE all_path SET path = 36, name_path = "Cultural Periods" WHERE name = "Cultural Periods";
+   UPDATE all_path SET path = 44, name_path = "Human history" WHERE name = "Human history";
+   UPDATE all_path SET path = 45, name_path = "Places" WHERE name = "Places";
+
   
    DELETE FROM types_path WHERE id = NEW.uid;
    INSERT INTO types_path (name, id, parent_id) SELECT child_name, child_id, parent_id FROM types_parent_child WHERE child_id = NEW.uid; 
@@ -401,6 +325,13 @@ DROP TRIGGER IF EXISTS delete_hierarchy;
     
   BEGIN 
   
+   DELETE FROM all_path WHERE id = OLD.uid;
+   INSERT INTO all_path (name, id, parent_id) SELECT child_name, child_uid, parent_uid FROM parent_child_all WHERE child_uid = OLD.uid; 
+   UPDATE all_path SET path = 15, name_path = "Types" WHERE name = "Types";
+   UPDATE all_path SET path = 36, name_path = "Cultural Periods" WHERE name = "Cultural Periods";
+   UPDATE all_path SET path = 44, name_path = "Human history" WHERE name = "Human history";
+   UPDATE all_path SET path = 45, name_path = "Places" WHERE name = "Places";
+   
    DELETE FROM types_path WHERE id = OLD.uid;
    INSERT INTO types_path (name, id, parent_id) SELECT child_name, child_id, parent_id FROM types_parent_child WHERE child_id = OLD.uid; 
    UPDATE types_path SET path = 15, name_path = "Types" WHERE name = "Types";
@@ -434,9 +365,9 @@ CREATE TABLE tbl_links
   links_entity_uid_to integer NOT NULL, -- target entity uid
   links_annotation text, -- remarks, description etc. E.g. for declaring a page number in case of entity of class document „refers to“ entity of class thing ecc. 
   links_creator character varying(50) DEFAULT 'sys', -- username of the link's creator
-  links_timestamp_start timestamp without time zone, -- date or time when the property begins to be linked to the entity
-  links_timestamp_end timestamp without time zone, -- date or time when the property ends to be linked to the entity
-  links_timestamp_creation timestamp without time zone DEFAULT CURRENT_TIMESTAMP, -- timestamp of the creation automatically composed
+  links_timestamp_start text DEFAULT NULL, -- date or time when the property begins to be linked to the entity
+  links_timestamp_end text DEFAULT NULL, -- date or time when the property ends to be linked to the entity
+  links_timestamp_creation text DEFAULT NULL, -- timestamp of the creation automatically composed
   links_timespan integer, -- duration of the link i.e. the timespan in which the property links the two entities (uid of a certain E52 entity)
   CONSTRAINT tbl_links_links_cidoc_number_direction_fkey FOREIGN KEY (links_cidoc_number_direction)
       REFERENCES tbl_properties (tbl_properties_uid) MATCH SIMPLE
@@ -463,6 +394,13 @@ CREATE TABLE tbl_links
   ON tbl_links
     
   BEGIN 
+  
+   DELETE FROM all_path WHERE id = NEW.links_entity_uid_from;
+   INSERT INTO all_path (name, id, parent_id) SELECT child_name, child_uid, parent_uid FROM parent_child_all WHERE child_uid = NEW.links_entity_uid_from; 
+   UPDATE all_path SET path = 15, name_path = "Types" WHERE name = "Types";
+   UPDATE all_path SET path = 36, name_path = "Cultural Periods" WHERE name = "Cultural Periods";
+   UPDATE all_path SET path = 44, name_path = "Human history" WHERE name = "Human history";
+   UPDATE all_path SET path = 45, name_path = "Places" WHERE name = "Places";
   
    DELETE FROM types_path WHERE id = NEW.links_entity_uid_from;
    INSERT INTO types_path (name, id, parent_id) SELECT child_name, child_id, parent_id FROM types_parent_child WHERE child_id = NEW.links_entity_uid_from; 
@@ -492,6 +430,13 @@ DROP TRIGGER IF EXISTS insert_hierarchy_links;
     
   BEGIN 
   
+   DELETE FROM all_path WHERE id = NEW.links_entity_uid_from;
+   INSERT INTO all_path (name, id, parent_id) SELECT child_name, child_uid, parent_uid FROM parent_child_all WHERE child_uid = NEW.links_entity_uid_from; 
+   UPDATE all_path SET path = 15, name_path = "Types" WHERE name = "Types";
+   UPDATE all_path SET path = 36, name_path = "Cultural Periods" WHERE name = "Cultural Periods";
+   UPDATE all_path SET path = 44, name_path = "Human history" WHERE name = "Human history";
+   UPDATE all_path SET path = 45, name_path = "Places" WHERE name = "Places";
+   
    DELETE FROM types_path WHERE id = NEW.links_entity_uid_from;
    INSERT INTO types_path (name, id, parent_id) SELECT child_name, child_id, parent_id FROM types_parent_child WHERE child_id = NEW.links_entity_uid_from; 
    UPDATE types_path SET path = 15, name_path = "Types" WHERE name = "Types";
@@ -519,6 +464,13 @@ DROP TRIGGER IF EXISTS insert_hierarchy_links;
     
   BEGIN 
   
+   DELETE FROM all_path WHERE id = OLD.links_entity_uid_from;
+   INSERT INTO all_path (name, id, parent_id) SELECT child_name, child_uid, parent_uid FROM parent_child_all WHERE child_uid = OLD.links_entity_uid_from; 
+   UPDATE all_path SET path = 15, name_path = "Types" WHERE name = "Types";
+   UPDATE all_path SET path = 36, name_path = "Cultural Periods" WHERE name = "Cultural Periods";
+   UPDATE all_path SET path = 44, name_path = "Human history" WHERE name = "Human history";
+   UPDATE all_path SET path = 45, name_path = "Places" WHERE name = "Places";
+   
    DELETE FROM types_path WHERE id = OLD.links_entity_uid_from;
    INSERT INTO types_path (name, id, parent_id) SELECT child_name, child_id, parent_id FROM types_parent_child WHERE child_id = OLD.links_entity_uid_from; 
    UPDATE types_path SET path = 15, name_path = "Types" WHERE name = "Types";
@@ -554,12 +506,13 @@ CREATE TABLE tbl_gis_linestring
   object_name character varying(100), -- to whom it may concern
   object_description text, -- to whom it may concern
   srid_epsg integer, -- EPSG Code /SRID of the coord. System
+  geom text,
   CONSTRAINT tbl_gis_linestring_parent_entity_id_fkey FOREIGN KEY (parent_uid)
       REFERENCES tbl_entities (uid) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE CASCADE
   );
 
-SELECT AddGeometryColumn ( 'tbl_gis_linestring', 'geom', -1, 'LINESTRING', 2 );
+--SELECT AddGeometryColumn ( 'tbl_gis_linestring', 'geom', -1, 'LINESTRING', 2 );
 
 -- tbl_gis_polygons
 
@@ -572,12 +525,13 @@ CREATE TABLE tbl_gis_polygons
   object_name character varying(100), -- to whom it may concern
   object_description text, -- to whom it may concern
   srid_epsg integer, -- EPSG Code /SRID of the coord. System
+  geom text,
   CONSTRAINT tbl_gis_polygons_parent_entity_id_fkey FOREIGN KEY (parent_uid)
       REFERENCES tbl_entities (uid) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE CASCADE
   );
 
-SELECT AddGeometryColumn ( 'tbl_gis_polygons', 'geom', -1, 'POLYGON', 2 );
+--SELECT AddGeometryColumn ( 'tbl_gis_polygons', 'geom', -1, 'POLYGON', 2 );
 
 -- tbl_gis_points
 
@@ -590,18 +544,39 @@ CREATE TABLE tbl_gis_points
   object_name character varying(100), -- to whom it may concern
   object_description text, -- to whom it may concern
   srid_epsg integer, -- EPSG Code /SRID of the coord. System
+  geom text,
   CONSTRAINT tbl_gis_points_parent_entity_id_fkey FOREIGN KEY (parent_uid)
       REFERENCES tbl_entities (uid) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE CASCADE
   );
 
-SELECT AddGeometryColumn ( 'tbl_gis_points', 'geom', -1, 'POINT', 2 );
+--SELECT AddGeometryColumn ( 'tbl_gis_points', 'geom', -1, 'POINT', 2 );
 
 
 
 
+--view parent_child_all (needed for tree-editor)
+CREATE VIEW parent_child_all AS 
+ SELECT 
+    tbl_entities.uid AS child_uid,
+    tbl_entities.entity_name_uri AS child_name,
+    tbl_links.links_cidoc_number_direction AS link,
+    tbl_entities_1.uid AS parent_uid, 
+    tbl_entities_1.entity_name_uri AS parent_name 
+   FROM tbl_entities
+   JOIN tbl_links ON tbl_entities.uid = tbl_links.links_entity_uid_from
+   JOIN tbl_entities tbl_entities_1 ON tbl_links.links_entity_uid_to = tbl_entities_1.uid;
 
-
+   
+--all path
+CREATE TABLE all_path
+  (
+    name character varying(250),
+    id integer,
+    path text,
+    parent_id integer,
+    name_path text
+ );   
 
 --view types parent_child (needed for recursive view "types_path")
 
@@ -718,6 +693,36 @@ CREATE TABLE place_path
 --Create tables with path of types, places, periods and timespans
 --these tables need to be manually updated after the entitites have been inserted or changed by inserting the top parent of the category in order to fire the recursive trigger
 --this needs to be done seperately and PRAGMA recursive_triggers have to be enabled before and disabled after from within another script
+
+
+--all
+DROP TABLE IF EXISTS all_tree;
+CREATE TABLE all_tree 
+(
+name character varying(250),
+uid INTEGER,
+path TEXT,
+parent_id INTEGER,
+name_path TEXT
+);
+
+
+CREATE TRIGGER find_path_all AFTER INSERT ON all_tree BEGIN
+ INSERT INTO all_tree (name, uid, parent_id, path, name_path) 
+  SELECT 
+   name,
+   id,
+   parent_id,
+   NEW.path || " > " || id,
+   NEW.name_path || " > " || name 
+  FROM all_path
+ WHERE
+   all_path.parent_id = NEW.uid;
+
+
+
+END;
+
 
 
 --types
@@ -914,7 +919,8 @@ INSERT INTO tbl_entities (entity_id, classes_uid, entity_name_uri, entity_type, 
 
 --sample data places required
 INSERT INTO tbl_entities (entity_id, classes_uid, entity_name_uri, entity_type) VALUES ('pla_001', 4, 'Places', NULL);
-INSERT INTO tbl_entities (entity_id, classes_uid, entity_name_uri, entity_type) VALUES ('pla_002', 4, 'Europe', 17);
+INSERT INTO tbl_entities (entity_id, classes_uid, entity_name_uri, entity_type) VALUES ('pla_002', 4, 'World', 17);
+INSERT INTO tbl_entities (entity_id, classes_uid, entity_name_uri, entity_type) VALUES ('pla_003', 4, 'Europe', 17);
    
    
    
@@ -965,6 +971,7 @@ INSERT INTO tbl_links (links_entity_uid_from, links_cidoc_number_direction, link
 INSERT INTO tbl_links (links_entity_uid_from, links_cidoc_number_direction, links_entity_uid_to) VALUES ((SELECT uid FROM tbl_entities WHERE entity_id = 'Per_005'), (SELECT tbl_properties_uid serial FROM tbl_properties WHERE property_cidoc_number_direction = 'P010a'), (SELECT uid FROM tbl_entities WHERE entity_id = 'Per_001'));
 INSERT INTO tbl_links (links_entity_uid_from, links_cidoc_number_direction, links_entity_uid_to) VALUES ((SELECT uid FROM tbl_entities WHERE entity_id = 'Per_006'), (SELECT tbl_properties_uid serial FROM tbl_properties WHERE property_cidoc_number_direction = 'P010a'), (SELECT uid FROM tbl_entities WHERE entity_id = 'Per_001'));
 INSERT INTO tbl_links (links_entity_uid_from, links_cidoc_number_direction, links_entity_uid_to) VALUES ((SELECT uid FROM tbl_entities WHERE entity_id = 'Per_007'), (SELECT tbl_properties_uid serial FROM tbl_properties WHERE property_cidoc_number_direction = 'P010a'), (SELECT uid FROM tbl_entities WHERE entity_id = 'Per_001'));
+INSERT INTO tbl_links (links_entity_uid_from, links_cidoc_number_direction, links_entity_uid_to) VALUES ((SELECT uid FROM tbl_entities WHERE entity_id = 'pla_003'), (SELECT tbl_properties_uid serial FROM tbl_properties WHERE property_cidoc_number_direction = 'P089a'), (SELECT uid FROM tbl_entities WHERE entity_id = 'pla_002'));
 
 
 

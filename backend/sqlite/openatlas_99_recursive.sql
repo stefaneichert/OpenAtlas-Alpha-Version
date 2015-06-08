@@ -27,7 +27,7 @@
 
 
 
-
+DELETE FROM all_tree;
 DELETE FROM types_all_tree;
 DELETE FROM cultural_period_all_tree;
 DELETE FROM chronological_period_all_tree;
@@ -36,6 +36,10 @@ DELETE FROM place_all_tree;
 
 PRAGMA recursive_triggers = TRUE;
 
+INSERT INTO all_tree SELECT * FROM all_path WHERE name = "Types";
+INSERT INTO all_tree SELECT * FROM all_path WHERE name = "Cultural Periods";
+INSERT INTO all_tree SELECT * FROM all_path WHERE name = "Human history";
+INSERT INTO all_tree SELECT * FROM all_path WHERE name = "Places";
 INSERT INTO types_all_tree SELECT * FROM types_path WHERE name = "Types";
 INSERT INTO cultural_period_all_tree SELECT * FROM cultural_period_path WHERE name = "Cultural Periods";
 INSERT INTO chronological_period_all_tree SELECT * FROM chronological_period_path WHERE name = "Human history";

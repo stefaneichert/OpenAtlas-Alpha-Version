@@ -1,0 +1,50 @@
+License and Copyright information:
+
+------------------------------------------------------------------------------
+--                                                                          --
+--                                                                          --
+--    openATLAS is free software: you can redistribute it and/or modify     --
+--    it under the terms of the GNU General Public License as published by  --
+--    the Free Software Foundation, either version 3 of the License, or     --
+--    any later version.                                                    --
+--                                                                          --
+--    openATLAS is distributed in the hope that it will be useful,          --
+--    but WITHOUT ANY WARRANTY; without even the implied warranty of        --
+--    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         --
+--    GNU General Public License for more details.                          --
+--                                                                          --
+--    You should have received a copy of the GNU General Public License     --
+--    along with openATLAS. If not, see <http://www.gnu.org/licenses/>.     --
+--                                                                          --
+--    Database Design and MS-Access Frontend by Stefan Eichert 2013         --
+--    stefan.eichert@univie.ac.at                                           --
+--                                                                          --
+--                                                                          --
+------------------------------------------------------------------------------
+
+OpenATLAS uses SQLite and SpatiaLite as offline database backends.
+For the connection between frontend and backend ODBC Drivers are used.
+They are licenced under various licenses which are included in the /licence/ 
+folder of the OpenATLAS installation.
+
+If you use PostgreSQL and PostGIS Servers as a backend, you should have 
+downloaded and installed it on your own using a respective license that
+came with the software itself. OpenATLAS does not distribute any PostgreSQL
+or PostGIS Server Software, though it comes shipped with SQL-scripts for
+setting up the OpenATLAS database on an already installed Postgres/PostGIS Server.
+These scripts are licensed under the GNU General Public License.
+
+Some icons used in OpenATLAS come from the Open Icon Library. Also their licence
+texts are included in the aforementioned folder.
+
+The MS-Access frontend is created within this Microsoft programme. This software
+of course is not shipped with OpenATLAS and the user needs a licensed Version of
+MS-Access on his or her computer in order to legally use OpenATLAS.
+
+Concept, design and content of the Frontend though is licensed under the GNU General 
+Public License <http://www.gnu.org/licenses/>. Some parts of the code in OpenATLAS
+were integrated from various other sources. They are of course commented in the
+VBA code and the respective copyright note is documented there.
+
+
+For further information on OpenATLAS visit the Website: www.openatlas.eu

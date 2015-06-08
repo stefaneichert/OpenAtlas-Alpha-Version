@@ -1,0 +1,3 @@
+If not stated otherwise, the images and icons used for the graphical user interface of OpenATLAS are Public Domain.
+Some Icons are from the Open Icon Library. For their copyright and license information see the documents in the \license\icons folder
+of your OpenATLAS installation.

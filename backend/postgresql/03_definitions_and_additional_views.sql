@@ -343,7 +343,8 @@ SELECT
    openatlas.tbl_entities.uid, 
    openatlas.tbl_entities.entity_id, 
    openatlas.tbl_entities.entity_name_uri, 
-   openatlas.tbl_links.links_uid
+   openatlas.tbl_links.links_uid,
+   openatlas.tbl_links.links_annotation
 FROM openatlas.tbl_links 
 INNER JOIN (openatlas.tbl_entities INNER JOIN openatlas.types_all_tree ON openatlas.tbl_entities.entity_type = openatlas.types_all_tree.id)
 ON openatlas.tbl_links.links_entity_uid_to = openatlas.tbl_entities.uid

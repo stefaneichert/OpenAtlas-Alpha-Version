@@ -92,8 +92,8 @@ SELECT
   tbl_entities.geom, -- a
   tbl_entities.entity_type, -- e (In the GUI the user should be able to select the type by its name in a hierarchical organized Select-Dialogue that saves the chosen type's uid in the entity_type field of the current dataset)
   types_all_tree.name_path,  -- v
-  st_x(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
-  st_y(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84
+  0 AS X_WGS84, -- st_x(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
+  0 AS Y_WGS84 --st_y(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84
 FROM 
   types_all_tree, 
   tbl_entities
@@ -141,8 +141,8 @@ SELECT
   tbl_entities.geom, -- a
   tbl_entities.entity_type, -- e (In the GUI the user should be able to select the type by its name in a hierarchical organized Select-Dialogue that saves the chosen type's uid in the entity_type field of the current dataset)
   types_all_tree.name_path,  -- v
-  st_x(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
-  st_y(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84,
+  0 AS X_WGS84, -- st_x(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
+  0 AS Y_WGS84, -- st_y(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84,
   tbl_links.links_entity_uid_from AS parent -- v parent uid of feature
 FROM 
   types_all_tree, 
@@ -196,8 +196,8 @@ SELECT
   tbl_entities.geom, -- a
   tbl_entities.entity_type, -- e (In the GUI the user should be able to select the type by its name in a hierarchical organized Select-Dialogue that saves the chosen type's uid in the entity_type field of the current dataset)
   types_all_tree.name_path,  -- v
-  st_x(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
-  st_y(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84,
+  0 AS X_WGS84, -- st_x(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
+  0 AS Y_WGS84, --st_y(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84,
   tbl_links.links_entity_uid_from AS parent -- v parent uid of feature
 FROM 
   types_all_tree, 
@@ -250,8 +250,8 @@ SELECT
   tbl_entities.geom, -- a
   tbl_entities.entity_type, -- e (In the GUI the user should be able to select the type by its name in a hierarchical organized Select-Dialogue that saves the chosen type's uid in the entity_type field of the current dataset)
   types_all_tree.name_path,  -- v
-  st_x(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
-  st_y(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84,
+  0 AS X_WGS84, -- st_x(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS X_WGS84, 
+  0 AS Y_WGS84, -- st_y(st_transform(setsrid(tbl_entities.geom, tbl_entities.srid_epsg), 4326)) AS Y_WGS84,
   tbl_links.links_entity_uid_from AS parent -- v parent uid of feature
 FROM 
   types_all_tree, 
