@@ -3,6 +3,10 @@ openAtlas
 openATLAS-README-file
 version 01, 2013-14-07
 
+
+This is the deprecated version of OpenAtlas. For the recent version please visit:
+https://github.com/stefaneichert/OpenAtlas-1
+
 OpenATLAS is a database application for the work with archeological,
 historical and spatial data. The developement is currently at an
 early stage and carried out by a small team from the University of Vienna.
